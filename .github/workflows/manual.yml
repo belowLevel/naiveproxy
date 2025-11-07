@@ -87,6 +87,7 @@ jobs:
           key: toolchains-pgo-mac-${{ hashFiles('CHROMIUM_VERSION') }}-v${{ env.CACHE_EPOCH }}
       - run: EXTRA_FLAGS='target_cpu="x64"' ./get-clang.sh
       - run: EXTRA_FLAGS='target_cpu="arm64"' ./get-clang.sh
+
   linux:
     needs: cache-toolchains-posix
     runs-on: ubuntu-22.04
@@ -154,13 +155,16 @@ jobs:
           echo "SHA256SUM=$(cut -d' ' -f2 sha256sum.txt)" >>$GITHUB_ENV
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUNDLE }}.tar.xz naive executable sha256 ${{ env.SHA256SUM }}
-          path: src/sha256sum.txt
+          name: ${{ env.BUNDLE }}
+          path: |
+            src/${{ env.BUNDLE }}.tar.xz
+            src/sha256sum.txt
       - name: Upload naiveproxy assets
         if: ${{ github.event_name == 'release' }}
-        run: gh release upload "${GITHUB_REF##*/}" ${{ env.BUNDLE }}.tar.xz --clobber
+        run: gh release upload "${GITHUB_REF##*/}" src/${{ env.BUNDLE }}.tar.xz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   android:
     needs: cache-toolchains-posix
     runs-on: ubuntu-22.04
@@ -249,8 +253,10 @@ jobs:
           echo "SHA256SUM=$(cut -d' ' -f2 sha256sum.txt)" >>$GITHUB_ENV
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUNDLE }} sha256 ${{ env.SHA256SUM }}
-          path: apk/sha256sum.txt
+          name: ${{ env.BUNDLE }}
+          path: |
+            src/apk/app/build/outputs/apk/release/${{ env.BUNDLE }}
+            src/apk/sha256sum.txt
       - name: Upload naiveproxy assets
         if: ${{ github.event_name == 'release' }}
         working-directory: apk/app/build/outputs/apk/release
@@ -314,11 +320,13 @@ jobs:
           echo "SHA256SUM=$(cut -d' ' -f2 sha256sum.txt)" >>$GITHUB_ENV
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUNDLE }}.zip naive executable sha256 ${{ env.SHA256SUM }}
-          path: src/sha256sum.txt
+          name: ${{ env.BUNDLE }}
+          path: |
+            src/${{ env.BUNDLE }}.zip
+            src/sha256sum.txt
       - name: Upload naiveproxy assets
         if: ${{ github.event_name == 'release' }}
-        run: gh release upload "${GITHUB_REF##*/}"  ${{ env.BUNDLE }}.zip --clobber
+        run: gh release upload "${GITHUB_REF##*/}"  src/${{ env.BUNDLE }}.zip --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   mac:
@@ -367,11 +375,13 @@ jobs:
           echo "SHA256SUM=$(cut -d' ' -f2 sha256sum.txt)" >>$GITHUB_ENV
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUNDLE }}.tar.xz naive executable sha256 ${{ env.SHA256SUM }}
-          path: src/sha256sum.txt
+          name: ${{ env.BUNDLE }}
+          path: |
+            src/${{ env.BUNDLE }}.tar.xz
+            src/sha256sum.txt
       - name: Upload naiveproxy assets
         if: ${{ github.event_name == 'release' }}
-        run: gh release upload "${GITHUB_REF##*/}" ${{ env.BUNDLE }}.tar.xz --clobber
+        run: gh release upload "${GITHUB_REF##*/}" src/${{ env.BUNDLE }}.tar.xz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   openwrt:
@@ -568,10 +578,12 @@ jobs:
           echo "SHA256SUM=$(cut -d' ' -f2 sha256sum.txt)" >>$GITHUB_ENV
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUNDLE }}.tar.xz naive executable sha256 ${{ env.SHA256SUM }}
-          path: src/sha256sum.txt
+          name: ${{ env.BUNDLE }}
+          path: |
+            src/${{ env.BUNDLE }}.tar.xz
+            src/sha256sum.txt
       - name: Upload naiveproxy assets
         if: ${{ github.event_name == 'release' }}
-        run: gh release upload "${GITHUB_REF##*/}" ${{ env.BUNDLE }}.tar.xz --clobber
+        run: gh release upload "${GITHUB_REF##*/}" src/${{ env.BUNDLE }}.tar.xz --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
